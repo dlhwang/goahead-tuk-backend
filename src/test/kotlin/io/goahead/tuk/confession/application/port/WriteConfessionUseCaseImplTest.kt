@@ -20,7 +20,7 @@ class WriteConfessionUseCaseImplTest {
     fun `writes confession with generated id`() {
         val confessionRepository = FakeConfessionRepository()
         val service = WriteConfessionUseCaseImpl(
-            authorService = AuthorService(FakeAuthorRepository()),
+            authorService = AuthorService(FakeAuthorRepository(existingAuthorId = "author-1")),
             confessionIdGenerator = FixedConfessionIdGenerator(ConfessionId("confession-1")),
             confessionRepository = confessionRepository,
         )
@@ -37,6 +37,27 @@ class WriteConfessionUseCaseImplTest {
         assertThat(saved?.id).isEqualTo(ConfessionId("confession-1"))
         assertThat(saved?.authorId).isEqualTo(ConfessionAuthorId("author-1"))
         assertThat(saved?.content?.value).isEqualTo("test confession")
+    }
+
+    @Test
+    fun `creates author when author does not exist`() {
+        val confessionRepository = FakeConfessionRepository()
+        val authorRepository = FakeAuthorRepository()
+        val service = WriteConfessionUseCaseImpl(
+            authorService = AuthorService(authorRepository),
+            confessionIdGenerator = FixedConfessionIdGenerator(ConfessionId("confession-1")),
+            confessionRepository = confessionRepository,
+        )
+
+        service.execute(
+            WriteConfessionCommand(
+                authorId = "device-1",
+                content = "test confession",
+            )
+        )
+
+        assertThat(authorRepository.saved?.id).isEqualTo(DomainAuthorId("device-1"))
+        assertThat(confessionRepository.saved?.authorId).isEqualTo(ConfessionAuthorId("device-1"))
     }
 
     private class FixedConfessionIdGenerator(
@@ -60,15 +81,26 @@ class WriteConfessionUseCaseImplTest {
         }
     }
 
-    private class FakeAuthorRepository : AuthorRepository {
-        override fun findById(id: String): Author {
-            return Author(
-                id = DomainAuthorId(id),
-                nickname = "tester",
-                createdAt = LocalDateTime.now(),
-            )
+    private class FakeAuthorRepository(
+        private val existingAuthorId: String? = null,
+    ) : AuthorRepository {
+        var saved: Author? = null
+
+        override fun findById(id: String): Author? {
+            return when (id) {
+                existingAuthorId -> Author(
+                    id = DomainAuthorId(id),
+                    nickname = "tester",
+                    createdAt = LocalDateTime.now(),
+                )
+
+                else -> saved?.takeIf { it.id.value == id }
+            }
         }
 
-        override fun save(author: Author): Author = author
+        override fun save(author: Author): Author {
+            saved = author
+            return author
+        }
     }
 }

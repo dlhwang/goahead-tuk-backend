@@ -19,7 +19,7 @@ class WriteConfessionUseCaseImpl(
 ) : WriteConfessionUseCase {
 
     override fun execute(command: WriteConfessionCommand): WriteConfessionResponse {
-        val author = authorService.getAuthor(command.authorId)
+        val author = authorService.getOrCreateAuthor(command.authorId)
         val authorId = AuthorId(author.id.value)
         val confessionId = confessionIdGenerator.generate()
         val confession = Confession.write(

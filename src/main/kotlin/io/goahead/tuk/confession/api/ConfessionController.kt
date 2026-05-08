@@ -9,6 +9,7 @@ import io.goahead.tuk.confession.application.port.ReactConfessionUseCase
 import io.goahead.tuk.confession.application.port.WriteConfessionUseCase
 import io.goahead.tuk.confession.application.port.command.ReactConfessionCommand
 import io.goahead.tuk.confession.application.port.command.WriteConfessionCommand
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -27,6 +28,7 @@ class ConfessionController(
     private val listConfessionsUseCase: ListConfessionsUseCase,
     private val reactConfessionUseCase: ReactConfessionUseCase,
 ) {
+    private val log = LoggerFactory.getLogger(javaClass)
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -34,6 +36,8 @@ class ConfessionController(
         @RequestHeader("X-Device-Id") deviceId: String,
         @RequestBody request: WriteConfessionRequest,
     ): ConfessionResponse {
+        log.info("Writing confession for deviceId={}", deviceId)
+
         val result = writeConfessionUseCase.execute(
             WriteConfessionCommand(
                 authorId = deviceId,
@@ -41,6 +45,7 @@ class ConfessionController(
             )
         )
 
+        log.info("Written confession id={}", result.id)
         return ConfessionResponse.from(result)
     }
 
@@ -48,12 +53,22 @@ class ConfessionController(
     fun get(
         @PathVariable confessionId: String,
     ): ConfessionResponse {
-        return ConfessionResponse.from(getConfessionUseCase.execute(confessionId))
+        log.info("Getting confession id={}", confessionId)
+
+        val result = getConfessionUseCase.execute(confessionId)
+
+        log.info("Got confession id={}", result.id)
+        return ConfessionResponse.from(result)
     }
 
     @GetMapping
     fun list(): List<ConfessionResponse> {
-        return listConfessionsUseCase.execute().map(ConfessionResponse::from)
+        log.info("Listing confessions")
+
+        val results = listConfessionsUseCase.execute()
+
+        log.info("Listed confessions count={}", results.size)
+        return results.map(ConfessionResponse::from)
     }
 
     @PostMapping("/{confessionId}/reactions")
@@ -62,11 +77,15 @@ class ConfessionController(
         @PathVariable confessionId: String,
         @RequestBody request: ReactConfessionRequest,
     ) {
+        log.info("Reacting to confession id={} type={}", confessionId, request.type)
+
         reactConfessionUseCase.execute(
             ReactConfessionCommand(
                 confessionId = confessionId,
                 type = request.type,
             )
         )
+
+        log.info("Reacted to confession id={} type={}", confessionId, request.type)
     }
 }

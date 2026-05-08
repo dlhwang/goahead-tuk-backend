@@ -19,11 +19,25 @@ class AuthorService(
         return author
     }
 
+    fun getOrCreateAuthor(id: String): Author {
+        return authorRepository.findById(id)
+            ?: authorRepository.save(
+                Author.create(
+                    authorId = AuthorId(id),
+                    nickname = DEFAULT_NICKNAME,
+                )
+            )
+    }
+
     fun save(command: SaveAuthorCommand): Author {
         val author = Author.create(
             AuthorId(command.authorId), command.nickname
         )
 
         return authorRepository.save(author)
+    }
+
+    companion object {
+        private const val DEFAULT_NICKNAME = "anonymous"
     }
 }
