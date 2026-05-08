@@ -3,6 +3,7 @@ package io.goahead.tuk.author.infrastructure
 import com.fasterxml.uuid.Generators
 import io.goahead.tuk.author.domain.Author
 import io.goahead.tuk.author.domain.AuthorId
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
@@ -12,8 +13,12 @@ import java.time.LocalDateTime
 @Table(name = "tb_authors")
 internal class AuthorEntity( // internal로 캡슐화
     @Id val id: String = Generators.timeBasedEpochGenerator().generate().toString(),
+
+    @Column(name = "nickname", nullable = false)
+    val nickname: String,
+
     val createdAt: LocalDateTime = LocalDateTime.now()
 ) {
     // Entity를 Domain Model로 변환하는 확장 함수
-    fun toModel() = Author(id = AuthorId(id), createdAt = createdAt)
+    fun toModel() = Author(id = AuthorId(id), nickname, createdAt = createdAt)
 }

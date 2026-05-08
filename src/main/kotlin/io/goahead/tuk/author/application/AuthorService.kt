@@ -1,10 +1,10 @@
 package io.goahead.tuk.author.application
 
 import io.goahead.tuk.author.application.command.SaveAuthorCommand
-import io.goahead.tuk.author.exception.AuthorNotFoundException
 import io.goahead.tuk.author.domain.Author
 import io.goahead.tuk.author.domain.AuthorId
 import io.goahead.tuk.author.domain.repository.AuthorRepository
+import io.goahead.tuk.author.exception.AuthorNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -21,7 +21,7 @@ class AuthorService(
 
     fun save(command: SaveAuthorCommand): Author {
         val author = Author.create(
-            authorId = AuthorId(command.authorId)
+            AuthorId(command.authorId), command.nickname
         )
 
         return authorRepository.save(author)

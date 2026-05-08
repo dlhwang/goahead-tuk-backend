@@ -1,10 +1,10 @@
-package io.goahead.tuk.confession.application.port.command
+package io.goahead.tuk.confession.api.response
 
-import io.goahead.tuk.confession.domain.Confession
+import io.goahead.tuk.confession.application.port.command.WriteConfessionResponse
 import io.goahead.tuk.confession.enums.ReactionType
 import java.time.Instant
 
-data class WriteConfessionResponse(
+data class ConfessionResponse(
     val id: String,
     val authorId: String,
     val content: String,
@@ -12,13 +12,13 @@ data class WriteConfessionResponse(
     val reactions: List<ReactionCountResponse>,
 ) {
     companion object {
-        fun from(confession: Confession): WriteConfessionResponse {
-            return WriteConfessionResponse(
-                id = confession.id.value,
-                authorId = confession.authorId.value,
-                content = confession.content.value,
-                createdAt = confession.createdAt,
-                reactions = confession.reactions.toList().map {
+        fun from(result: WriteConfessionResponse): ConfessionResponse {
+            return ConfessionResponse(
+                id = result.id,
+                authorId = result.authorId,
+                content = result.content,
+                createdAt = result.createdAt,
+                reactions = result.reactions.map {
                     ReactionCountResponse(
                         type = it.type,
                         count = it.count,
