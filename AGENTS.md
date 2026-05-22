@@ -95,6 +95,13 @@ cd scripts/aidlc-evaluator && uv run pytest
 ## PR instructions
 
 - PR titles must follow conventional commits format (e.g., `fix: description`)
+- Kotlin backend delivery under `src/` follows
+  [docs/BACKEND_GITFLOW.md](docs/BACKEND_GITFLOW.md):
+  use `feature/*` into `develop` for planned backend work and reserve
+  `release/*` and `hotfix/*` for release or released-code fixes.
+- Repository support files may change with backend GitFlow work when they guide
+  or validate backend delivery, but do not treat all AI-DLC rule or tooling work
+  as backend GitFlow work.
 - Always include this contributor statement at the end of the PR body:
 
   > By submitting this pull request, I confirm that you can use, modify, copy,

@@ -71,7 +71,14 @@ PRs produced by AI coding agents are welcome and follow the same process. Start 
 
 ### Submitting your PR
 
-1. Work against the latest `main` branch
+Backend delivery under `src/` follows the [Backend GitFlow guide](docs/BACKEND_GITFLOW.md).
+Use `feature/*` branches into `develop` for planned backend changes, and use
+`release/*` or `hotfix/*` branches for backend release work as described there.
+
+AI-DLC rule, documentation, and tooling contributions that are not backend
+delivery continue to follow the repository workflow for their area.
+
+1. Work against the integration or base branch defined for your change
 2. Check existing open and recently merged PRs
 3. Fork the repository
 4. Make your changes (keep them focused)

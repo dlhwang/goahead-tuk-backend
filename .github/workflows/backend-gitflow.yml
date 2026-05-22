@@ -1,0 +1,67 @@
+name: Backend GitFlow Validation
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+    paths:
+      - 'build.gradle.kts'
+      - 'gradle/**'
+      - 'gradlew'
+      - 'gradlew.bat'
+      - 'settings.gradle.kts'
+      - 'src/**'
+  workflow_dispatch:
+    inputs:
+      base_branch:
+        description: Base branch to validate
+        required: true
+        type: string
+      head_branch:
+        description: Head branch to validate
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  validate-backend-gitflow:
+    name: Validate backend branch flow
+    runs-on: ubuntu-latest
+    env:
+      BASE_BRANCH: ${{ github.event.pull_request.base.ref || inputs.base_branch }}
+      HEAD_BRANCH: ${{ github.event.pull_request.head.ref || inputs.head_branch }}
+    steps:
+      - name: Validate base and head branch
+        run: |
+          echo "Validating backend GitFlow head '$HEAD_BRANCH' into '$BASE_BRANCH'"
+
+          case "$BASE_BRANCH" in
+            develop)
+              case "$HEAD_BRANCH" in
+                feature/*|dependabot/*|release/*|hotfix/*)
+                  echo "Backend GitFlow branch flow is valid."
+                  ;;
+                *)
+                  echo "::error::Backend PRs into develop must come from feature/*, dependabot/*, release/*, or hotfix/*."
+                  exit 1
+                  ;;
+              esac
+              ;;
+            main)
+              case "$HEAD_BRANCH" in
+                release/*|hotfix/*)
+                  echo "Backend GitFlow branch flow is valid."
+                  ;;
+                *)
+                  echo "::error::Backend PRs into main must come from release/* or hotfix/*."
+                  exit 1
+                  ;;
+              esac
+              ;;
+            *)
+              echo "::error::Backend GitFlow validation only supports main and develop bases."
+              exit 1
+              ;;
+          esac
