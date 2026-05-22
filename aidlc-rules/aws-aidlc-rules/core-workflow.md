@@ -57,6 +57,12 @@ All subsequent rule detail file references (e.g., `common/process-overview.md`, 
 - Provide text alternatives for complex visual content
 - Test content parsing compatibility
 
+## MANDATORY: Documentation Language
+**CRITICAL**: Write all AI-DLC documentation created or changed from this point forward in Korean.
+- Do NOT translate or rewrite existing documentation only to change its language
+- When changing an existing document, write newly added or revised documentation content in Korean unless the user explicitly requests another language
+- Preserve exact user input in audit logs and keep code, identifiers, commands, file paths, protocol names, and required technical syntax in their appropriate original form
+
 ## MANDATORY: Question File Format
 **CRITICAL**: When asking questions at any phase, you MUST follow question format guidelines.
 
