@@ -5,7 +5,6 @@ import io.goahead.tuk.author.domain.Author
 import io.goahead.tuk.author.domain.AuthorId as DomainAuthorId
 import io.goahead.tuk.author.domain.repository.AuthorRepository
 import io.goahead.tuk.confession.application.ConfessionIdGenerator
-import io.goahead.tuk.confession.application.port.command.WriteConfessionCommand
 import io.goahead.tuk.confession.domain.AuthorId as ConfessionAuthorId
 import io.goahead.tuk.confession.domain.Confession
 import io.goahead.tuk.confession.domain.ConfessionId
@@ -25,12 +24,7 @@ class WriteConfessionUseCaseImplTest {
             confessionRepository = confessionRepository,
         )
 
-        service.execute(
-            WriteConfessionCommand(
-                authorId = "author-1",
-                content = "test confession",
-            )
-        )
+        service.execute(authorId = "author-1", content = "test confession")
 
         val saved = confessionRepository.saved
         assertThat(saved).isNotNull
@@ -49,12 +43,7 @@ class WriteConfessionUseCaseImplTest {
             confessionRepository = confessionRepository,
         )
 
-        service.execute(
-            WriteConfessionCommand(
-                authorId = "device-1",
-                content = "test confession",
-            )
-        )
+        service.execute(authorId = "device-1", content = "test confession")
 
         assertThat(authorRepository.saved?.id).isEqualTo(DomainAuthorId("device-1"))
         assertThat(confessionRepository.saved?.authorId).isEqualTo(ConfessionAuthorId("device-1"))

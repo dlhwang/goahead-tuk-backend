@@ -2,57 +2,47 @@
 
 ## Scope
 
-This change adds backend GitFlow documentation, contributor and agent guidance,
-PR template guidance, and a GitHub Actions workflow. It does not change Kotlin
-backend runtime code.
+Build and verify the Kotlin Spring Boot backend after the anonymous confession
+write flow boundary update.
 
 ## Prerequisites
 
-- **Documentation lint tool**: `markdownlint-cli2` through `npx.cmd` on Windows.
-- **Patch check tool**: Git.
-- **Workflow validation**: GitHub Actions execution or maintainer workflow lint
-  tooling such as `actionlint` when available.
+- **Build tool**: Gradle wrapper in the workspace.
+- **Runtime target**: Java 21 toolchain configured by the project.
+- **Dependencies**: Resolved by Gradle from `build.gradle.kts`.
+- **Environment variables**: None required for the backend test suite with the
+  current local test configuration.
 
 ## Build Steps
 
-### 1. Validate Changed Markdown
+### 1. Build And Test The Backend
 
 ```powershell
-npx.cmd markdownlint-cli2 "AGENTS.md" "CONTRIBUTING.md" ".github/pull_request_template.md" "docs/BACKEND_GITFLOW.md" "aidlc-docs/**/*.md"
+.\gradlew.bat test
 ```
 
-### 2. Validate Patch Formatting
+### 2. Run The Focused Write-Flow Test During Iteration
 
 ```powershell
-git diff --check
+.\gradlew.bat test --tests io.goahead.tuk.confession.application.port.WriteConfessionUseCaseImplTest
 ```
 
-### 3. Validate GitHub Workflow Locally When Tooling Exists
+### 3. Verify Build Success
 
-```powershell
-actionlint .github/workflows/backend-gitflow.yml
-```
-
-If `actionlint` is unavailable, use GitHub Actions validation after pushing the
-workflow or run the manual dispatch scenarios from the integration test
-instructions.
-
-## Verify Success
-
-- Changed Markdown reports zero lint errors.
-- `git diff --check` reports no patch errors.
-- GitHub Actions accepts and executes
-  `.github/workflows/backend-gitflow.yml`.
+- Gradle reports `BUILD SUCCESSFUL`.
+- Compiled classes and test reports are generated under `build/`.
+- Confession write tests cover both existing-author and auto-create-author
+  write paths.
 
 ## Troubleshooting
 
-### Full Repository Markdown Lint Fails
+### Kotlin Compile Daemon Warnings
 
-The full repository lint command may expose unrelated existing Markdown issues.
-Review whether the failing file is part of the current change before treating it
-as a regression.
+Gradle may report Kotlin daemon connection or temp-file access warnings in
+restricted environments and then compile with its fallback strategy. Treat the
+Gradle task result as authoritative when the build completes successfully.
 
-### Workflow Validation Cannot Run Locally
+### Test Failures
 
-Use the workflow `workflow_dispatch` inputs to validate example head and base
-branch pairs in GitHub Actions after the workflow is available on a branch.
+Review the Gradle output and the reports under `build/reports/tests/test/`,
+fix the failing code or test, and rerun the same Gradle command.

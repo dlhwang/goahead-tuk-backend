@@ -1,27 +1,29 @@
 # Unit Test Execution
 
-## Scope
+## Unit Test Scope
 
-No Kotlin unit tests are required for this GitFlow documentation and workflow
-change because backend runtime code is unchanged.
+The focused unit verification for this change is the confession write use case
+test suite.
 
-## Static Checks
-
-Run changed Markdown lint:
+## Run Focused Unit Tests
 
 ```powershell
-npx.cmd markdownlint-cli2 "AGENTS.md" "CONTRIBUTING.md" ".github/pull_request_template.md" "docs/BACKEND_GITFLOW.md" "aidlc-docs/**/*.md"
+.\gradlew.bat test --tests io.goahead.tuk.confession.application.port.WriteConfessionUseCaseImplTest
 ```
 
-Run patch formatting validation:
+## Expected Scenarios
+
+- Generated confession ids are persisted on write.
+- A known anonymous author id is reused.
+- A missing anonymous author is created before the confession is saved.
+
+## Run All Backend Tests
 
 ```powershell
-git diff --check
+.\gradlew.bat test
 ```
 
 ## Review Results
 
-- Markdown lint should report zero errors for changed Markdown files.
-- Patch validation should report no whitespace or conflict marker issues.
-- Kotlin test suites remain optional for this change because no Kotlin source or
-  test files are modified.
+- Gradle should report zero failed tests.
+- Test reports are available under `build/reports/tests/test/`.

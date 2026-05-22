@@ -8,7 +8,6 @@ import io.goahead.tuk.confession.application.port.ListConfessionsUseCase
 import io.goahead.tuk.confession.application.port.ReactConfessionUseCase
 import io.goahead.tuk.confession.application.port.WriteConfessionUseCase
 import io.goahead.tuk.confession.application.port.command.ReactConfessionCommand
-import io.goahead.tuk.confession.application.port.command.WriteConfessionCommand
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -38,12 +37,7 @@ class ConfessionController(
     ): ConfessionResponse {
         log.info("Writing confession for deviceId={}", deviceId)
 
-        val result = writeConfessionUseCase.execute(
-            WriteConfessionCommand(
-                authorId = deviceId,
-                content = request.content,
-            )
-        )
+        val result = writeConfessionUseCase.execute(deviceId, request.content)
 
         log.info("Written confession id={}", result.id)
         return ConfessionResponse.from(result)

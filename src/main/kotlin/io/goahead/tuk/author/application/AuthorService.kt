@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class AuthorService(
-    private val authorRepository: AuthorRepository // Infrastructure의 JpaRepository 의존
+    private val authorRepository: AuthorRepository,
 ) {
     fun getAuthor(id: String): Author {
         val author = authorRepository.findById(id)

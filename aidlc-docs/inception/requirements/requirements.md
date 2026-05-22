@@ -2,161 +2,122 @@
 
 ## Intent Analysis
 
-- **User request**: Analyze the existing project through AI-DLC and define a
-  GitFlow-based source control strategy for future Kotlin Spring Boot backend
-  delivery.
-- **Request type**: Developer workflow enhancement with repository guidance and
-  automation implications.
-- **Scope estimate**: Multiple repository components may change to support the
-  backend delivery policy, including documentation, PR guidance, and workflow
-  automation.
-- **Complexity estimate**: Moderate. GitFlow itself is established, but this
-  brownfield repository mixes backend code with AI-DLC rule distribution and
-  tooling, so the policy boundary must be explicit.
-- **Requirements depth**: Standard. The request needs functional workflow
-  requirements, automation boundaries, and operational constraints without
-  product user stories.
+- **User request**: Complete the MVP API work for an anonymous device-based
+  confession service by improving confession author handling and preserving the
+  current clean architecture boundaries.
+- **Request type**: Backend API enhancement.
+- **Scope estimate**: Multiple backend components across confession and author
+  API/application/domain/infrastructure packages plus focused tests.
+- **Complexity estimate**: Moderate. The desired user behavior is explicit, but
+  the implementation must keep device identity, author creation, use case
+  commands, and persistence dependencies on the correct side of layer
+  boundaries.
+- **Requirements depth**: Minimal. The user supplied the MVP behavior and key
+  architectural constraints directly.
 
 ## Context
 
-The repository contains a Kotlin Spring Boot backend under `src/` plus AI-DLC
-rules, documentation, and helper tooling. This effort governs **backend
-delivery**. Repository-level files outside `src/` may be changed only when they
-guide, validate, or automate that backend GitFlow process.
+The backend is a Kotlin and Spring Boot application with domain-oriented
+packages for `author` and `confession`. HTTP controllers call application
+services or use cases. Domain repositories are ports, while JPA entities and
+Spring Data repositories live under infrastructure.
 
-The user selected a standard GitFlow baseline:
-
-- Long-lived `main` for stable release history.
-- Long-lived `develop` for backend integration work.
-- `feature/*` branches for planned backend changes.
-- `release/*` branches for release stabilization.
-- `hotfix/*` branches for urgent fixes from released code.
+The confession write API already accepts the `X-Device-Id` request header as the
+anonymous author identifier. The MVP should treat `Author` as an anonymous
+device identity rather than a separately registered member prerequisite.
 
 ## Functional Requirements
 
-### FR-1 GitFlow Policy
+### FR-1 Anonymous Device Author Identity
 
-The project shall define a GitFlow policy for Kotlin Spring Boot backend
-delivery.
+The confession write API shall use `X-Device-Id` as the anonymous author
+identity for the MVP.
 
-The policy shall define:
+The implementation shall not require a separate member registration workflow
+before a device can write a confession.
 
-- The purpose of `main` and `develop`.
-- When `feature/*`, `release/*`, and `hotfix/*` branches are created.
-- The expected merge targets for each branch type.
-- How release and hotfix work returns to both stable and integration history.
-- Naming guidance for backend branches and tags.
+### FR-2 Author Auto-Creation On Confession Write
 
-### FR-2 Backend Scope Boundary
+When a confession write request references an anonymous device id that does not
+already have an `Author`, the write flow shall create the `Author` automatically
+and continue writing the confession.
 
-The policy shall state that GitFlow governs backend delivery work rather than
-all AI-DLC methodology content in the repository.
+The confession write flow shall not return HTTP `404` solely because the
+anonymous device author does not already exist.
 
-The implementation may update repository-level support files outside `src/`
-when they are necessary to guide or enforce backend GitFlow behavior, including:
+### FR-3 Existing Author Reuse
 
-- Contributor or project documentation.
-- PR templates or PR review guidance.
-- GitHub workflow validation where feasible.
-- AI-DLC guidance files that future agents should follow for backend delivery.
+When an `Author` already exists for the `X-Device-Id`, the write flow shall use
+that existing author identity and persist the confession without creating a
+duplicate author.
 
-### FR-3 Repository Guidance
+### FR-4 Controller Boundary
 
-The implementation shall provide durable guidance that contributors and coding
-agents can follow when creating backend branches and PRs.
+The confession controller shall map HTTP header and request body data without
+depending directly on application command value objects.
 
-Guidance shall cover:
+The application boundary shall own command creation or an equivalent use case
+input adaptation that keeps transport DTOs out of domain logic.
 
-- New feature delivery.
-- Release preparation.
-- Hotfix handling.
-- Expected PR base branch.
-- Required synchronization or back-merge behavior.
+### FR-5 Persistence Boundary
 
-### FR-4 Automation-Oriented Rules
+JPA entities and Spring Data `JpaRepository` types shall remain inside
+infrastructure packages.
 
-The implementation shall design toward branch and PR enforcement where the
-repository can express it in versioned files.
-
-Automation-oriented support may include:
-
-- Workflow checks that validate branch or PR flow when feasible.
-- PR template or checklist updates.
-- Documentation of settings that require Git hosting configuration, such as
-  branch protection or required checks, when those settings cannot be fully
-  encoded in the repository.
-
-### FR-5 CI and Deployment Implications
-
-The design shall include CI/CD and deployment implications of the backend
-GitFlow policy and implement approved repository automation changes that are
-needed for the chosen policy.
-
-The design shall avoid unintentionally changing release behavior for AI-DLC
-rule distribution unless that behavior is explicitly needed for backend
-GitFlow support.
-
-### FR-6 AI-DLC Alignment
-
-AI-DLC artifacts for this run shall track the GitFlow decision and use it during
-Workflow Planning and later code generation planning.
-
-This run shall stay focused on GitFlow branch management. It shall not expand
-into a separate SDD process definition for future feature delivery.
+Application logic shall depend on domain repository ports rather than
+infrastructure repository implementations.
 
 ## Non-Functional Requirements
 
-### NFR-1 Maintainability
+### NFR-1 Architectural Consistency
 
-The policy and automation shall be understandable by developers and coding
-agents without relying on chat history.
+The change shall preserve the existing clean architecture direction:
 
-### NFR-2 Repository Safety
+- API code handles HTTP concerns and response mapping.
+- Application code orchestrates author lookup or creation and confession write
+  use cases.
+- Domain code holds repository ports and business value types.
+- Infrastructure code holds persistence adapters, JPA entities, and Spring Data
+  repositories.
 
-Implementation shall respect existing brownfield boundaries:
+### NFR-2 Testability
 
-- Preserve the current backend domain-oriented package layout unless a later
-  approved design requires code changes.
-- Avoid broad policy changes for AI-DLC rule release material unless needed for
-  backend GitFlow support.
-- Work with any existing uncommitted deployment changes instead of overwriting
-  them.
+Focused tests shall cover both confession write paths:
 
-### NFR-3 Testability
+- Existing anonymous author.
+- Missing anonymous author that is created automatically.
 
-Any workflow or validation changes shall include a verification approach that
-can be executed locally or explained when validation depends on Git hosting
-settings.
+Tests should also protect the controller-to-use-case boundary when the affected
+API contract changes.
 
-### NFR-4 Traceability
+### NFR-3 MVP Scope
 
-The resulting documentation shall make the branch strategy, enforcement points,
-and non-versioned repository settings clear enough to review in a PR.
+The change shall stay focused on APIs needed for the anonymous confession MVP.
+It shall not introduce a member account model, authentication redesign, or
+unrelated author lifecycle features.
 
 ## Out Of Scope
 
-- Defining a repository-wide GitFlow policy for AI-DLC rules, docs, and Python
-  tooling as independent product areas.
-- Building a new SDD process beyond this AI-DLC run.
-- Enabling the Security Baseline extension for this run.
-- Enabling the Property-Based Testing extension for this run.
-- Implementing backend product features unrelated to GitFlow support.
+- Replacing `X-Device-Id` with a login or token-based identity scheme.
+- Moving JPA entities or Spring Data repositories out of infrastructure.
+- Redesigning read or reaction APIs unless a targeted compatibility fix is
+  required by the confession write change.
+- Enabling the Security Baseline or Property-Based Testing AI-DLC extensions
+  that are currently recorded as disabled for this workflow state.
 
 ## Quality and Review Considerations
 
-- User stories are not recommended for the next stage because this request is
-  developer workflow, documentation, CI/CD, and repository automation work with
-  no direct product-user behavior change.
-- Workflow Planning should decide whether application design and units
-  generation add value. A likely path is a focused workflow plan followed by
-  code generation planning for documentation and automation changes.
-- Branch protection settings may need a human-applied checklist if they cannot
-  be enforced by committed files alone.
+- The reverse-engineering artifacts already describe author and confession as
+  separate backend domain areas with repository adapters.
+- This API enhancement affects a user-facing write path, so Workflow Planning
+  should decide whether the existing requirements are enough or a small story
+  artifact would improve reviewability before code generation.
+- Code generation planning should inspect the current `WriteConfessionUseCase`
+  and `AuthorRepository` boundaries before changing public application inputs.
 
 ## Requirement Summary
 
-This AI-DLC run shall produce and implement a standard GitFlow strategy for
-backend delivery in the existing repository. The implementation may touch
-repository-level documentation and automation files to guide or enforce backend
-branch and PR flow, while keeping the policy boundary separate from unrelated
-AI-DLC rule distribution work.
+This AI-DLC run shall adjust the confession write API so anonymous devices can
+write immediately: missing device-backed authors are created automatically,
+existing authors are reused, and the change keeps controllers, application
+ports, domain repositories, and infrastructure persistence separated.

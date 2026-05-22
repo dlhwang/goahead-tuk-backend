@@ -1,52 +1,45 @@
-# Build and Test Summary
+# Build And Test Summary
 
 ## Build Status
 
-- **Change type**: Documentation and GitHub workflow validation.
-- **Build status**: Static validation completed for the changed scope.
-- **Build artifacts**: Backend GitFlow policy and validation workflow already
-  listed in `aidlc-docs/construction/backend-gitflow/code/code-generation-summary.md`.
+- **Build tool**: Gradle wrapper
+- **Build status**: Success
+- **Build artifacts**: Compiled backend and Gradle test reports under `build/`
+- **Build time**: Full backend test run completed in about 22 seconds
 
 ## Test Execution Summary
 
-### Static Checks
+### Focused Unit Tests
 
-- **Changed Markdown lint**: Passed.
-- **Patch formatting**: Passed.
-- **Full repository Markdown lint**: Attempted and blocked by existing
-  `HELP.md` findings outside this change.
+- **Command**:
+  `.\gradlew.bat test --tests io.goahead.tuk.confession.application.port.WriteConfessionUseCaseImplTest`
+- **Status**: Pass
+- **Notes**: Gradle logged Kotlin daemon temp-file access warnings and compiled
+  with fallback strategy before reporting success.
 
-### Workflow Validation
+### Full Backend Tests
 
-- **Local `actionlint`**: Not run because the command was unavailable.
-- **Local YAML parser check**: Not run because a suitable local command was not
-  available.
-- **GitHub Actions verification**: Required for the new backend GitFlow workflow
-  after it is available in the repository.
+- **Command**: `.\gradlew.bat test`
+- **Status**: Pass
+- **Notes**: Gradle reported `BUILD SUCCESSFUL`.
 
-### Backend Tests
+### Integration Tests
 
-- **Kotlin unit tests**: Not run because the change does not modify Kotlin
-  backend runtime or test files.
-- **Integration tests**: Manual GitHub workflow scenarios documented in
-  `integration-test-instructions.md`.
-- **Performance tests**: Not applicable.
-- **Contract tests**: Not applicable.
-- **Security tests**: Not applicable for this AI-DLC run because the security
-  extension was disabled.
+- **Automated status**: Existing full backend suite passed, including the
+  application smoke test.
+- **Manual API scenarios**: Documented for first-write and same-device later
+  writes.
+
+### Performance And Additional Tests
+
+- **Performance tests**: N/A for this focused MVP API boundary change.
+- **Contract tests**: N/A because there is no separate service contract suite in
+  the current backend.
+- **Security extension tests**: N/A because the Security Baseline extension is
+  disabled for this AI-DLC run.
 
 ## Overall Status
 
-- **Repository change validation**: Passed for changed Markdown and patch
-  formatting checks.
-- **Workflow execution validation**: Pending GitHub Actions or maintainer
-  workflow lint tooling.
-- **Ready for Operations**: Ready for review with documented manual GitHub
-  settings and workflow dispatch checks.
-
-## Generated Instruction Files
-
-- `build-instructions.md`
-- `unit-test-instructions.md`
-- `integration-test-instructions.md`
-- `build-and-test-summary.md`
+- **Build**: Success
+- **Tests**: Pass for focused write-flow and full backend Gradle runs
+- **Ready for Operations placeholder**: Yes
