@@ -6,6 +6,10 @@
 <!-- TODO: Replace this Amplify URL with a permanent/stable URL when available -->
 AI-DLC is an intelligent software development workflow that adapts to your needs, maintains quality standards, and keeps you in control of the process. For learning more about AI-DLC Methodology, read this [blog](https://aws.amazon.com/blogs/devops/ai-driven-development-life-cycle/) and the [Method Definition Paper](https://prod.d13rzhkk8cj2z0.amplifyapp.com/) referred in it.
 
+For a quick map of the current workspace, including the Kotlin backend and the
+AI-DLC rule and tooling directories, see the
+[Project Overview](docs/PROJECT_OVERVIEW.md).
+
 ## Table of Contents
 
 - [Common](#common)
