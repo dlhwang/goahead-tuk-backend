@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: goahead-tuk
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /tuk
