@@ -6,15 +6,16 @@ reading the longer AI-DLC usage and operations guides.
 
 ## What Is In This Repository
 
-The repository currently contains two related areas of work:
+The repository currently contains three related areas of work:
 
 1. **TUK backend application** - a Kotlin and Spring Boot API under `src/`.
-2. **AI-DLC workflow material** - rule files, documentation, and supporting
-   scripts under `aidlc-rules/`, `docs/`, and `scripts/`.
+2. **AI-DLC workflow rules** - the agent rule files under `aidlc-rules/`.
+3. **Project AI-DLC artifacts** - generated and maintained planning or
+   implementation records under `aidlc-docs/`.
 
 The backend application is the runnable code in this workspace. The AI-DLC
-material provides workflow rules and tooling that support AI-driven development
-and evaluation.
+rules guide assisted development; `aidlc-docs/` records the work performed for
+this project.
 
 ## TUK Backend
 
@@ -67,16 +68,14 @@ goahead-tuk/
 |-- aidlc-rules/                 # Distributable AI-DLC rule files
 |   |-- aws-aidlc-rules/         # Core workflow entry point
 |   `-- aws-aidlc-rule-details/  # Phase-specific and extension rules
-|-- docs/                        # Repository and AI-DLC guides
-|-- scripts/
-|   |-- aidlc-evaluator/         # Workflow evaluator framework
-|   |-- aidlc-designreview/      # Design review tooling
-|   `-- aidlc-traceability/      # Traceability tooling and guidance
-|-- assets/                      # Images and other documentation assets
-|-- .github/                     # GitHub workflows and repository automation
+|-- aidlc-docs/                  # Project-specific AI-DLC artifacts
+|-- docs/                        # Project overview and backend GitFlow guide
+|-- .github/
+|   `-- workflows/
+|       `-- backend-gitflow.yml  # Backend branch-flow validation
 |-- build.gradle.kts             # Application build definition
 |-- settings.gradle.kts          # Gradle project name
-`-- README.md                    # AI-DLC setup and usage guide
+`-- AGENTS.md                    # Repository guidance for coding agents
 ```
 
 ## Main Application Entry Points
@@ -104,17 +103,10 @@ Run backend tests:
 ./gradlew test
 ```
 
-Run markdown lint for repository documentation:
+Run markdown lint for repository documentation when the tool is available:
 
 ```bash
 npx markdownlint-cli2 "**/*.md"
-```
-
-Run evaluator tests from the evaluator workspace:
-
-```bash
-cd scripts/aidlc-evaluator
-uv run pytest
 ```
 
 On Windows PowerShell, use `.\gradlew.bat` instead of `./gradlew` for Gradle
@@ -122,16 +114,29 @@ commands.
 
 ## Documentation Map
 
-- [`README.md`](../README.md) covers AI-DLC setup, supported agents, usage, and
-  extension overview.
-- [`WORKING-WITH-AIDLC.md`](WORKING-WITH-AIDLC.md) covers interaction patterns
-  for running the AI-DLC workflow.
-- [`GENERATED_DOCS_REFERENCE.md`](GENERATED_DOCS_REFERENCE.md) describes the
-  generated `aidlc-docs/` artifact structure.
-- [`DEVELOPERS_GUIDE.md`](DEVELOPERS_GUIDE.md) covers local build and security
-  scanner guidance for AI-DLC tooling.
-- [`ADMINISTRATIVE_GUIDE.md`](ADMINISTRATIVE_GUIDE.md) covers CI/CD, releases,
-  permissions, and administration.
+- [`BACKEND_GITFLOW.md`](BACKEND_GITFLOW.md) defines branch and pull request
+  policy for backend delivery.
+- [`../AGENTS.md`](../AGENTS.md) records guidance for agents working in this
+  repository.
+- [`../aidlc-docs/`](../aidlc-docs/) contains project-specific AI-DLC planning,
+  design, and implementation artifacts.
+
+## External Pull Request Review Apps
+
+CodeRabbit pull request comments are produced by the CodeRabbit GitHub App,
+not by a workflow committed in this repository. No `.coderabbit.yaml` or
+`.coderabbit.yml` configuration file is maintained here.
+
+If automatic CodeRabbit reviews should be disabled, repository or organization
+administrators must verify and change the app installation or its automatic
+review setting in GitHub and CodeRabbit:
+
+- Repository **Settings** > **Integrations** > **GitHub Apps**
+- Organization **Settings** > **GitHub Apps** > **CodeRabbit**
+- CodeRabbit dashboard automatic review settings for this repository
+
+Deleting imported GitHub Actions workflows does not remove an installed GitHub
+App or prevent the app from receiving pull request events.
 
 ## Notes For Contributors
 
@@ -140,5 +145,5 @@ commands.
 - Do not rename `aidlc-rules/aws-aidlc-rules/` or
   `aidlc-rules/aws-aidlc-rule-details/`; those directory names are part of the
   distributed AI-DLC rules contract.
-- Read the existing guide for the area you are changing before updating rules,
-  scripts, CI/CD workflows, or release behavior.
+- Imported AI-DLC automation and auxiliary tooling are intentionally not part
+  of this application repository; adopt new automation explicitly when needed.

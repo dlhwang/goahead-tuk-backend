@@ -6,7 +6,8 @@ Please read through this document before submitting any issues or pull requests.
 
 ## Tenets
 
-Before contributing, familiarize yourself with our [tenets](README.md#tenets).
+Before contributing, familiarize yourself with the repository layout in
+[docs/PROJECT_OVERVIEW.md](docs/PROJECT_OVERVIEW.md).
 
 ## Contributing Rules
 
@@ -75,7 +76,7 @@ Backend delivery under `src/` follows the [Backend GitFlow guide](docs/BACKEND_G
 Use `feature/*` branches into `develop` for planned backend changes, and use
 `release/*` or `hotfix/*` branches for backend release work as described there.
 
-AI-DLC rule, documentation, and tooling contributions that are not backend
+AI-DLC rule and generated documentation contributions that are not backend
 delivery continue to follow the repository workflow for their area.
 
 1. Work against the integration or base branch defined for your change

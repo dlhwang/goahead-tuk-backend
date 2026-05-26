@@ -1,8 +1,8 @@
 # Backend GitFlow
 
 This guide defines the GitFlow policy for the Kotlin Spring Boot backend under
-`src/`. The repository also contains AI-DLC rule material, documentation, and
-Python tooling. Those areas do not become backend GitFlow work just because
+`src/`. The repository also contains AI-DLC rule material and generated project
+documentation. Those areas do not become backend GitFlow work just because
 they share this repository.
 
 Repository-level support files may change with backend delivery when they guide
@@ -46,9 +46,8 @@ Backend dependency update branches such as `dependabot/*` should also target
 5. Merge or backport the release result into `develop` so the integration line
    keeps the released fixes.
 
-Use a backend tag namespace if the repository keeps AI-DLC release tags and
-backend release tags side by side. A tag such as `backend-v0.4.0` avoids
-confusing backend delivery with the existing AI-DLC `v*` release workflows.
+Use a backend tag namespace such as `backend-v0.4.0` so application releases
+remain distinct from any AI-DLC rule snapshots retained in repository history.
 
 ### Hotfix Flow
 
@@ -77,8 +76,8 @@ line.
 
 The backend GitFlow GitHub workflow checks pull requests to `main` or `develop`
 when they change backend paths such as `src/`, Gradle build files, or Gradle
-wrapper files. The workflow does not redefine the existing AI-DLC rule release
-workflows for `aidlc-rules/`.
+wrapper files. The workflow is scoped to backend branch flow and does not
+publish or validate the imported `aidlc-rules/` content.
 
 ## GitHub Settings
 
@@ -91,8 +90,7 @@ files. Configure these after the `develop` branch exists:
 - Require backend CI checks selected by the maintainers.
 - Restrict direct pushes to `main` and `develop` to the maintainers who need
   release or recovery access.
-- Keep tag permissions clear so backend tags and AI-DLC release tags do not
-  trigger the wrong release process.
+- Keep tag permissions clear for backend release and recovery procedures.
 
 ## Contributor Checklist
 
