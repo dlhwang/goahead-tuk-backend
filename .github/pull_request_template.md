@@ -14,7 +14,7 @@
 
 If your change doesn't seem to apply, please leave them unchecked.
 
-* [ ] I have reviewed the [contributing guidelines](https://github.com/awslabs/aidlc-workflows/blob/main/CONTRIBUTING.md)
+* [ ] I have reviewed the [contributing guidelines](../CONTRIBUTING.md)
 * [ ] For backend delivery changes under `src/`, the branch type and PR base follow the backend GitFlow guide
 * [ ] For `release/*` or `hotfix/*` backend PRs, the required `develop` follow-up is documented
 * [ ] I have performed a self-review of this change
@@ -27,4 +27,4 @@ If your change doesn't seem to apply, please leave them unchecked.
 
 ## Acknowledgment
 
-By submitting this pull request, I confirm that you can use, modify, copy, and redistribute this contribution, under the terms of the [project license](https://github.com/awslabs/aidlc-workflows/blob/main/LICENSE).
+By submitting this pull request, I confirm that you can use, modify, copy, and redistribute this contribution, under the terms of the [project license](../LICENSE).
