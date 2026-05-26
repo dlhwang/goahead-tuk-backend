@@ -121,6 +121,23 @@ commands.
 - [`../aidlc-docs/`](../aidlc-docs/) contains project-specific AI-DLC planning,
   design, and implementation artifacts.
 
+## External Pull Request Review Apps
+
+CodeRabbit pull request comments are produced by the CodeRabbit GitHub App,
+not by a workflow committed in this repository. No `.coderabbit.yaml` or
+`.coderabbit.yml` configuration file is maintained here.
+
+If automatic CodeRabbit reviews should be disabled, repository or organization
+administrators must verify and change the app installation or its automatic
+review setting in GitHub and CodeRabbit:
+
+- Repository **Settings** > **Integrations** > **GitHub Apps**
+- Organization **Settings** > **GitHub Apps** > **CodeRabbit**
+- CodeRabbit dashboard automatic review settings for this repository
+
+Deleting imported GitHub Actions workflows does not remove an installed GitHub
+App or prevent the app from receiving pull request events.
+
 ## Notes For Contributors
 
 - Keep application code under `src/`; AI-DLC-generated workflow artifacts
