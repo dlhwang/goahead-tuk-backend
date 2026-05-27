@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:tukdemo;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+security:
+  device-key-hmac-secret: ${DEVICE_KEY_HMAC_SECRET}
+  rate-limit:
+    device-per-minute: 10
+    source-per-minute: 60
+    max-keys: 10000

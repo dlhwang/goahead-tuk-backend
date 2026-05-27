@@ -1,7 +1,6 @@
 package io.goahead.tuk.confession.api
 
 import io.goahead.tuk.confession.api.request.WriteConfessionRequest
-import io.goahead.tuk.confession.api.request.ReactConfessionRequest
 import io.goahead.tuk.confession.api.response.ConfessionResponse
 import io.goahead.tuk.confession.application.port.GetConfessionUseCase
 import io.goahead.tuk.confession.application.port.ListConfessionsUseCase
@@ -13,6 +12,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
@@ -35,7 +36,8 @@ class ConfessionController(
         @RequestHeader("X-Device-Id") deviceId: String,
         @RequestBody request: WriteConfessionRequest,
     ): ConfessionResponse {
-        log.info("Writing confession for deviceId={}", deviceId)
+        validateDeviceId(deviceId)
+        log.info("Writing confession")
 
         val result = writeConfessionUseCase.execute(deviceId, request.content)
 
@@ -65,21 +67,45 @@ class ConfessionController(
         return results.map(ConfessionResponse::from)
     }
 
-    @PostMapping("/{confessionId}/reactions")
+    @PutMapping("/{confessionId}/reactions/{type}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun react(
+    fun selectReaction(
         @PathVariable confessionId: String,
-        @RequestBody request: ReactConfessionRequest,
+        @PathVariable type: String,
+        @RequestHeader("X-Device-Id") deviceId: String,
     ) {
-        log.info("Reacting to confession id={} type={}", confessionId, request.type)
-
-        reactConfessionUseCase.execute(
+        validateDeviceId(deviceId)
+        reactConfessionUseCase.select(
             ReactConfessionCommand(
                 confessionId = confessionId,
-                type = request.type,
+                deviceId = deviceId,
+                type = type,
             )
         )
+    }
 
-        log.info("Reacted to confession id={} type={}", confessionId, request.type)
+    @DeleteMapping("/{confessionId}/reactions/{type}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun clearReaction(
+        @PathVariable confessionId: String,
+        @PathVariable type: String,
+        @RequestHeader("X-Device-Id") deviceId: String,
+    ) {
+        validateDeviceId(deviceId)
+        reactConfessionUseCase.clear(
+            ReactConfessionCommand(
+                confessionId = confessionId,
+                deviceId = deviceId,
+                type = type,
+            )
+        )
+    }
+
+    private fun validateDeviceId(deviceId: String) {
+        require(DEVICE_ID_PATTERN.matches(deviceId)) { "Invalid device identifier" }
+    }
+
+    companion object {
+        private val DEVICE_ID_PATTERN = Regex("[A-Za-z0-9_-]{1,128}")
     }
 }

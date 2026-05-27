@@ -2,14 +2,15 @@ package io.goahead.tuk.confession.infrastructure
 
 import io.goahead.tuk.confession.enums.ReactionType
 import jakarta.persistence.*
+import java.time.Instant
 
 @Entity
 @Table(
-    name = "confession_reaction",
+    name = "confession_reaction_selection",
     uniqueConstraints = [
         UniqueConstraint(
-            name = "uk_confession_reaction_confession_type",
-            columnNames = ["confession_id", "reaction_type"]
+            name = "uk_confession_reaction_selection",
+            columnNames = ["confession_id", "device_key", "reaction_type"]
         )
     ]
 )
@@ -21,17 +22,21 @@ class ConfessionReactionJpaEntity(
     @Column(name = "confession_id", nullable = false)
     val confessionId: String,
 
+    @Column(name = "device_key", nullable = false, length = 64)
+    val deviceKey: String,
+
     @Enumerated(EnumType.STRING)
     @Column(name = "reaction_type", nullable = false, length = 50)
     val reactionType: ReactionType,
 
-    @Column(name = "reaction_count", nullable = false)
-    val count: Long,
+    @Column(name = "created_at", nullable = false, updatable = false)
+    val createdAt: Instant,
 ) {
     protected constructor() : this(
         id = "",
         confessionId = "",
-        reactionType = ReactionType.EMPATHY,
-        count = 0L
+        deviceKey = "",
+        reactionType = ReactionType.PRAY,
+        createdAt = Instant.EPOCH,
     )
 }

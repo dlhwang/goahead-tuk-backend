@@ -6,7 +6,6 @@ import java.time.Instant
 
 data class ConfessionResponse(
     val id: String,
-    val authorId: String,
     val content: String,
     val createdAt: Instant,
     val reactions: List<ReactionCountResponse>,
@@ -15,7 +14,6 @@ data class ConfessionResponse(
         fun from(result: WriteConfessionResponse): ConfessionResponse {
             return ConfessionResponse(
                 id = result.id,
-                authorId = result.authorId,
                 content = result.content,
                 createdAt = result.createdAt,
                 reactions = result.reactions.map {

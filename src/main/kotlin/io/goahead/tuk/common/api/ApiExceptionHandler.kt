@@ -2,9 +2,10 @@ package io.goahead.tuk.common.api
 
 import io.goahead.tuk.author.exception.AuthorNotFoundException
 import io.goahead.tuk.confession.exception.ConfessionNotFoundException
+import io.goahead.tuk.confession.exception.SelfReactionNotAllowedException
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
@@ -19,7 +20,19 @@ class ApiExceptionHandler {
     @ExceptionHandler(IllegalArgumentException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleBadRequest(exception: IllegalArgumentException): ErrorResponse {
-        return ErrorResponse(message = exception.message ?: "Bad request")
+        return ErrorResponse(message = "Bad request")
+    }
+
+    @ExceptionHandler(SelfReactionNotAllowedException::class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    fun handleForbidden(): ErrorResponse {
+        return ErrorResponse(message = "Forbidden")
+    }
+
+    @ExceptionHandler(Exception::class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    fun handleInternalError(): ErrorResponse {
+        return ErrorResponse(message = "Internal server error")
     }
 }
 

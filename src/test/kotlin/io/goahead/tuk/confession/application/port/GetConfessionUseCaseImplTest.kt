@@ -6,6 +6,7 @@ import io.goahead.tuk.confession.domain.ConfessionContent
 import io.goahead.tuk.confession.domain.ConfessionId
 import io.goahead.tuk.confession.domain.ReactionCounts
 import io.goahead.tuk.confession.domain.repository.ConfessionRepository
+import io.goahead.tuk.confession.domain.service.ReactionAggregateReader
 import io.goahead.tuk.confession.exception.ConfessionNotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -19,7 +20,8 @@ class GetConfessionUseCaseImplTest {
         val service = GetConfessionUseCaseImpl(
             confessionRepository = FakeConfessionRepository(
                 confessions = listOf(confession("confession-1"))
-            )
+            ),
+            reactionAggregateReader = FakeReactionAggregateReader(),
         )
 
         val result = service.execute("confession-1")
@@ -32,7 +34,8 @@ class GetConfessionUseCaseImplTest {
     @Test
     fun `throws when confession is missing`() {
         val service = GetConfessionUseCaseImpl(
-            confessionRepository = FakeConfessionRepository(confessions = emptyList())
+            confessionRepository = FakeConfessionRepository(confessions = emptyList()),
+            reactionAggregateReader = FakeReactionAggregateReader(),
         )
 
         assertThatThrownBy {
@@ -54,6 +57,11 @@ class GetConfessionUseCaseImplTest {
         override fun findAll(): List<Confession> = confessions
 
         override fun save(confession: Confession): Confession = confession
+    }
+
+    private class FakeReactionAggregateReader : ReactionAggregateReader {
+        override fun aggregate(confessionId: ConfessionId): ReactionCounts = ReactionCounts.empty()
+        override fun aggregate(confessionIds: Collection<ConfessionId>): Map<ConfessionId, ReactionCounts> = emptyMap()
     }
 }
 
