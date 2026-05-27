@@ -1,5 +1,7 @@
 # AI-DLC State Tracking
 
+<!-- markdownlint-disable MD060 -->
+
 ## Project Information
 
 - **Project Type**: Brownfield
@@ -29,6 +31,47 @@
 | ---------------------- | ------- | --------------------- |
 | Security Baseline      | No      | Requirements Analysis |
 | Property-Based Testing | No      | Requirements Analysis |
+
+## Active Change - Confession Reaction MVP
+
+- **Requested At**: 2026-05-26T02:28:48Z
+- **Branch**: `feature/confession-reactions`
+- **Current Phase**: CONSTRUCTION
+- **Current Stage**: Code Generation - In Progress
+- **Change Goal**: 허용된 긍정 반응 `PRAY`, `COMFORT`, `TOGETHER`를
+  고해에 남기고 별도 반응 도메인 및 테이블로 집계한다.
+- **Confirmed Decisions**: 기기와 고해 및 타입별 1회 반응,
+  `X-Device-Id` 필수, 변경 및 취소 포함, 성공 시 본문 없는 응답.
+- **Confirmed API Contract**:
+  `PUT /api/confessions/{confessionId}/reactions/{type}`는 타입을
+  선택된 상태로 만들고, 동일 경로의 `DELETE`는 해제된 상태로 만든다.
+  각 요청은 멱등하며 성공 시 `204 No Content`를 반환한다.
+- **Demo Deployment Scope**: Railway 최초 배포는 H2 메모리
+  datasource를 사용하는 일회성 preview이며, 재시작 또는 재배포 시
+  데이터 초기화를 허용한다. 영속 production 운영 증빙은 이월한다.
+
+### Reaction MVP Extension Configuration
+
+| Extension              | Enabled | Decided At            | Enforcement Scope            |
+| ---------------------- | ------- | --------------------- | ---------------------------- |
+| Security Baseline      | Yes     | Demo Scope Amendment   | Demo code controls blocking; production operational evidence deferred |
+| Property-Based Testing | Yes     | Requirements Analysis | Full applicable requirements |
+
+### Reaction MVP Progress
+
+- [x] Workspace Detection - 기존 brownfield 저장소와 완료 산출물 재사용
+- [x] Reverse Engineering - 기존 반응 초기 구현과 계층 구조 점검
+- [x] Requirements Analysis - 요구사항 승인 완료
+- [x] User Stories - Reaction 페르소나 및 스토리 승인 완료
+- [x] Workflow Planning - 전체 보안 범위 실행 계획 승인 완료
+- [x] Application Design - 설계 산출물 승인 완료
+- [x] Units Generation - 세 논리 단위 산출물 승인 완료
+- [x] Functional Design - 세 단위 설계 산출물 승인 완료
+- [x] NFR Requirements - 세 단위 산출물 승인 완료
+- [x] NFR Design - 세 단위 산출물 승인 완료
+- [x] Infrastructure Design - H2 Railway demo 수정 산출물 승인 완료
+- [ ] Code Generation - 세 단위 통합 구현 진행 중
+- [ ] Build and Test - 코드 변경 후 수행
 
 ## Code Location Rules
 
@@ -93,6 +136,16 @@
   Infrastructure Design
 - **Next planned stage**: None. Operations is a placeholder after Build and
   Test.
+
+## Reaction MVP Execution Plan Summary
+
+- **Stages completed**: Requirements Analysis, User Stories, Workflow
+  Planning, Application Design, Units Generation, Functional Design,
+  NFR Requirements, NFR Design
+- **Stages to execute**: Infrastructure Design,
+  Code Generation, Build and Test
+- **Required gates**: Full Security Baseline evidence and applicable
+  Property-Based Testing compliance before final Build and Test approval
 
 ## Reverse Engineering Status
 
