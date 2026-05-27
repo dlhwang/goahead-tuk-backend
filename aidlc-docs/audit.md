@@ -1577,3 +1577,225 @@ commit으로 기록한다.
 **Context**: CONSTRUCTION - UOW-REACTION Code Generation 전달 및 GitFlow
 
 ---
+
+## AI-DLC 실행 모드 규칙 보강 요청 및 Fast Track 계획
+
+**Timestamp**: 2026-05-27T00:27:58Z
+**User Input**:
+
+````text
+AGENTS.md와 AI-DLC 관련 기존 문서를 먼저 확인한 뒤, AI-DLC 실행 모드 규칙을 기존 구조에 맞게 반영해줘.
+
+작업 목적:
+현재 저장소는 AI-DLC를 하네스 엔지니어링 방식으로 사용하고 있다.
+하지만 모든 작업에 전체 AI-DLC 단계를 실행하면 작은 변경에도 산출물과 토큰 사용량이 과도하게 늘어난다.
+따라서 AI-DLC를 유지하되, 작업 규모와 위험도에 따라 실행 모드를 선택하는 규칙을 AGENTS.md에 반영하고 싶다.
+
+먼저 반드시 확인할 문서:
+1. AGENTS.md
+2. aidlc-rules/aws-aidlc-rules/core-workflow.md
+3. aidlc-docs/aidlc-state.md
+4. aidlc-docs/audit.md
+5. aidlc-docs/inception/** 중 최근 작업 흐름을 이해하는 데 필요한 문서
+6. aidlc-docs/construction/** 중 최근 작업 흐름을 이해하는 데 필요한 문서
+7. docs/BACKEND_GITFLOW.md
+8. .github/pull_request_template.md
+
+주의:
+- 기존 문서를 덮어쓰지 말고, 기존 규칙과 충돌하지 않게 보강해줘.
+- AGENTS.md에 이미 있는 AI-DLC 기본 작업 방식, 문서 작성 언어, GitFlow, 검증 규칙은 유지해줘.
+- aidlc-docs는 프로젝트 산출물이므로 삭제하거나 정리 대상으로 취급하지 마.
+- aidlc-rules의 upstream 규칙 파일은 이번 작업에서 수정하지 마.
+- core-workflow.md의 Adaptive Workflow Principle과 충돌하지 않게 작성해줘.
+- 새로 작성하거나 수정하는 설명은 한국어로 작성해줘.
+- 코드 식별자, 파일 경로, 명령어, 프로토콜 이름은 원문을 유지해줘.
+
+반영할 핵심 개념:
+AI-DLC는 항상 기본 개발 절차로 적용한다.
+다만 모든 작업이 전체 AI-DLC 단계를 필요로 하지는 않는다.
+코드 어시스트는 작업 시작 시 작업 규모, 설계 불확실성, 위험도, 검증 필요성을 기준으로 실행 모드를 선택한다.
+선택한 모드, 선택 이유, 실행할 AI-DLC 단계, 생략할 AI-DLC 단계, 생략 사유, 검증 계획을 작업 계획에 먼저 기록한다.
+
+추가해야 할 핵심 문장:
+"코드 어시스트는 AI-DLC를 항상 적용하되, 모든 AI-DLC 단계를 항상 실행하지는 않는다. 작업 규모와 위험도에 따라 실행 모드를 선택하고, 실행하지 않는 단계는 명시적으로 skip 사유를 남긴다."
+
+추가할 실행 모드:
+1. Fast Track
+2. Standard Track
+3. Design Track
+4. Full Track
+
+각 실행 모드에는 다음 내용을 포함해줘:
+- 사용 조건
+- 대표 예시
+- 기본 실행 단계
+- 기본 생략 단계
+- 조건부 실행 단계
+- 검증 기준
+
+Fast Track 기준:
+- 문서 일부 수정
+- 오타 또는 명확한 설정 변경
+- 단일 파일 중심의 작은 버그 수정
+- 실패 원인이 분명한 CI 또는 테스트 보정
+- 새로운 API 계약, 도메인 경계, DB 스키마 변경이 없는 작업
+
+Fast Track 기본 실행 단계:
+- Workspace 확인
+- Requirements Analysis minimal
+- Workflow Planning minimal
+- Code Generation 또는 문서 수정
+- 최소 검증
+- 완료 보고
+
+Fast Track 기본 생략 단계:
+- User Stories
+- Application Design
+- Units Generation
+- NFR Requirements
+- NFR Design
+- Infrastructure Design
+
+Standard Track 기준:
+- 기존 아키텍처 경계 안에서 일반 기능을 추가하거나 수정하는 작업
+- controller, use case, domain, repository, test 중 둘 이상의 계층 변경
+- 기존 도메인 안의 기능 추가
+- 기존 API 응답 필드 추가
+- 기존 테스트 보강
+
+Standard Track 기본 실행 단계:
+- Workspace 확인
+- Requirements Analysis minimal 또는 standard
+- Workflow Planning standard
+- 필요한 경우 Functional Design
+- Code Generation
+- Build and Test
+
+Standard Track 조건부 실행 단계:
+- User Stories
+- Application Design
+- NFR Requirements
+- Units Generation
+
+Design Track 기준:
+- 구현보다 설계 결정이 먼저 필요한 작업
+- 도메인 경계 결정
+- API 계약 결정
+- 상태 전이 또는 멱등성 정책 결정
+- rate limiting, 인증, 익명 식별 같은 정책 경계 결정
+- 여러 구현 선택지의 trade-off가 큰 작업
+
+Design Track 기본 실행 단계:
+- Workspace 확인
+- Requirements Analysis standard
+- 필요한 질문 작성
+- Workflow Planning
+- Application Design 또는 Functional Design
+- 설계 결정 기록
+- 승인 후 Code Generation
+- Build and Test
+
+Design Track 조건부 실행 단계:
+- User Stories
+- Units Generation
+- NFR Requirements
+- NFR Design
+
+Full Track 기준:
+- 여러 도메인, 여러 계층, 배포, 보안, 운영 영향이 있는 큰 변경
+- 신규 주요 기능 전체 구현
+- 프론트엔드와 백엔드 계약을 함께 바꾸는 작업
+- DB 스키마, 보안, 운영, 배포가 함께 바뀌는 작업
+- 여러 unit of work로 나누어야 하는 작업
+
+Full Track 기본 실행 단계:
+- aidlc-rules/aws-aidlc-rules/core-workflow.md의 전체 흐름을 따른다.
+- 생략하는 단계가 있다면 생략 사유를 명시한다.
+
+AGENTS.md에 추가할 위치:
+- "AI-DLC 기본 작업 방식" 섹션 뒤 또는 그 내부 하위 섹션으로 추가하는 것을 우선 검토해줘.
+- 기존 문맥상 더 적절한 위치가 있으면 그 위치를 선택하고 이유를 작업 계획에 기록해줘.
+
+작업 전 계획에 반드시 포함할 내용:
+1. Requirement summary
+2. Task type
+3. Selected AI-DLC execution mode
+4. Reason for selected mode
+5. Required context files
+6. Expected files to change
+7. Files or directories that must not change
+8. Validation commands
+9. Risks or assumptions
+
+이번 작업에서 예상되는 모드:
+- Fast Track 또는 Standard Track 중 하나를 선택해줘.
+- 문서 보강만으로 충분하면 Fast Track을 선택해도 된다.
+- 기존 aidlc-docs 흐름과의 정합성 확인이 필요하다고 판단하면 Standard Track을 선택해도 된다.
+- 선택 이유를 명시해줘.
+
+구현 제약:
+- AGENTS.md 중심으로 수정해줘.
+- aidlc-rules/aws-aidlc-rules/core-workflow.md는 수정하지 마.
+- aidlc-rules/aws-aidlc-rule-details/**는 수정하지 마.
+- aidlc-docs/**는 기존 진행 상태 확인 목적으로 읽되, 이번 작업에서 꼭 필요하지 않으면 수정하지 마.
+- 불필요한 새 산출물을 만들지 마.
+- 기존 문장을 삭제하기보다, 충돌이 없도록 보강하는 방향을 우선해줘.
+- markdownlint에 걸리지 않도록 heading level, line length, fenced code block 형식을 정리해줘.
+
+검증:
+1. npx markdownlint-cli2 "AGENTS.md"
+2. 가능하면 npx markdownlint-cli2 "**/*.md"
+3. Git diff 확인
+4. 변경한 문서가 기존 AI-DLC 경로 및 GitFlow 규칙과 충돌하지 않는지 자체 점검
+
+완료 보고에 포함할 내용:
+- 선택한 AI-DLC 실행 모드와 이유
+- 읽은 주요 문서
+- 수정한 파일
+- 핵심 변경 내용
+- 수정하지 않은 보호 대상 파일/디렉터리
+- 실행한 검증 명령과 결과
+- 검증하지 못한 항목이 있으면 이유
+````
+
+**AI Response**: 문서 및 하네스 운영 지침만 보강하고 API, 도메인,
+데이터 저장 또는 실행 동작을 변경하지 않으므로 `Fast Track`을
+선택했다. `AGENTS.md`의 `AI-DLC 기본 작업 방식` 바로 뒤에 실행 모드
+섹션을 추가한다. 기본 원칙 직후에 평가 기준을 제시해야 작업 시작 시
+바로 적용할 수 있고, `core-workflow.md`의 adaptive 판단을 대체하지
+않고 구체화할 수 있기 때문이다.
+
+**Plan**:
+
+1. `Requirement summary`: AI-DLC를 유지하면서 작업 규모와 위험도에
+   따라 네 실행 모드를 선택하고 skip 사유 및 검증 계획을 기록하도록
+   루트 지침을 보강한다.
+2. `Task type`: 문서 및 하네스 운영 규칙 보강.
+3. `Selected AI-DLC execution mode`: `Fast Track`.
+4. `Reason for selected mode`: `AGENTS.md` 중심의 문서 변경이며 새 API
+   계약, 도메인 경계, DB 스키마 또는 실행 동작 영향이 없다.
+5. `Required context files`: `AGENTS.md`, `core-workflow.md`,
+   `aidlc-state.md`, `audit.md`, 최근 Reaction inception/construction
+   산출물, `docs/BACKEND_GITFLOW.md`, `.github/pull_request_template.md`,
+   관련 common rule details.
+6. `Expected files to change`: `AGENTS.md`와, 현재 적용 중인 감사 기록
+   의무를 충족하기 위한 `aidlc-docs/audit.md` append.
+7. `Files or directories that must not change`:
+   `aidlc-rules/aws-aidlc-rules/core-workflow.md`,
+   `aidlc-rules/aws-aidlc-rule-details/**`, `src/**`, 기존
+   `aidlc-docs/**` 상태 및 승인 산출물.
+8. `Validation commands`: `npx.cmd markdownlint-cli2 "AGENTS.md"`,
+   가능하면 `npx.cmd markdownlint-cli2 "**/*.md"`, `git diff --check`,
+   `git diff`.
+9. `Risks or assumptions`: 새 실행 모드는 upstream 규칙 및 활성
+   extension 필수 게이트를 무효화하지 않아야 하며, 진행 중인 Reaction
+   상태나 계획 체크박스는 갱신하지 않는다.
+
+**Stages**: Workspace 확인, `Requirements Analysis` minimal,
+`Workflow Planning` minimal, 문서 수정, Markdown 검증, 완료 보고를
+실행한다. `User Stories`, `Application Design`, `Units Generation`,
+`Functional Design`, `NFR Requirements`, `NFR Design`,
+`Infrastructure Design`은 기능/설계/인프라 영향이 없어 생략한다.
+**Context**: Fast Track - AI-DLC 운영 지침 문서 보강
+
+---
