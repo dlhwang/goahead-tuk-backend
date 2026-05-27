@@ -21,6 +21,18 @@ interface ConfessionReactionJpaRepository : JpaRepository<ConfessionReactionJpaE
 
     @Query(
         """
+        select r.reactionType
+        from ConfessionReactionJpaEntity r
+        where r.confessionId = :confessionId and r.deviceKey = :deviceKey
+        """
+    )
+    fun findReactionTypesByConfessionIdAndDeviceKey(
+        @Param("confessionId") confessionId: String,
+        @Param("deviceKey") deviceKey: String,
+    ): List<ReactionType>
+
+    @Query(
+        """
         select r.reactionType as reactionType, count(r) as count
         from ConfessionReactionJpaEntity r
         where r.confessionId = :confessionId
