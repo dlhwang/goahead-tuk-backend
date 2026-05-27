@@ -11,13 +11,15 @@ import kotlin.test.Test
 
 class ReactionSelectionPropertyTest {
     @Test
-    fun `selection set count matches idempotent command model`() = runBlocking {
-        checkAll(Arb.list(Arb.enum<ReactionType>(), range = 0..100)) { selections ->
-            val active = mutableSetOf<ReactionType>()
-            selections.forEach { active.add(it) }
+    fun `selection set count matches idempotent command model`() {
+        runBlocking {
+            checkAll(Arb.list(Arb.enum<ReactionType>(), range = 0..100)) { selections ->
+                val active = mutableSetOf<ReactionType>()
+                selections.forEach { active.add(it) }
 
-            assertThat(active.size).isEqualTo(selections.distinct().size)
-            assertThat(active).containsOnlyElementsOf(ReactionType.entries)
+                assertThat(active.size).isEqualTo(selections.distinct().size)
+                assertThat(active).isSubsetOf(ReactionType.entries)
+            }
         }
     }
 }

@@ -1519,3 +1519,61 @@ code summary for the anonymous confession write flow.
 **Context**: CONSTRUCTION - Code Generation Implementation
 
 ---
+
+## UOW-REACTION Code Generation 변경 요청
+
+**Timestamp**: 2026-05-27T00:09:58Z
+**User Input**:
+
+````text
+```
+class ReactionSelectionPropertyTest {
+    @Test
+    fun `selection set count matches idempotent command model`() = runBlocking {
+        checkAll(Arb.list(Arb.enum<ReactionType>(), range = 0..100)) { selections ->
+            val active = mutableSetOf<ReactionType>()
+            selections.forEach { active.add(it) }
+
+            assertThat(active.size).isEqualTo(selections.distinct().size)
+            assertThat(active).containsOnlyElementsOf(ReactionType.entries)
+        }
+    }
+}
+```
+여기 피나는데? `import kotlinx.coroutines.runBlocking`
+````
+
+**AI Response**: `ReactionSelectionPropertyTest` 컴파일을 재현하여
+`kotlinx.coroutines.runBlocking` 미해결과 `checkAll`의 suspend 호출
+오류를 확인했다. JUnit 진입점에서 Kotest property 검사를 실행할 수
+있도록 테스트 전용 `kotlinx-coroutines-core` 의존성을 추가했다.
+컴파일 해소 후 JUnit 6 실행 보고서에서 expression body가
+`PropertyContext`를 반환하여 테스트가 실행되지 않는 추가 결함을
+확인했으며, 메서드가 `Unit`을 반환하도록 변경하고 사용 중단
+assertion을 교체했다. `ReactionSelectionPropertyTest` 단일 지정 실행과
+전체 `test` 실행이 성공했고, 결과 XML에서 해당 property test 1건의
+실행 성공을 확인했다.
+현재 테스트는 실제 selection adapter 상태와 집합 모델을 대조하지
+않으므로 PBT 구현 완료 항목으로는 아직 처리하지 않는다.
+**Context**: CONSTRUCTION - UOW-REACTION Code Generation, Step 6 결함 수정
+
+---
+
+## UOW-REACTION GitFlow 전달 요청
+
+**Timestamp**: 2026-05-27T00:16:30Z
+**User Input**:
+
+```text
+gitflow 전략으로 commit까지 해줘
+```
+
+**AI Response**: `feature/confession-reactions`가 이미 `develop`에 병합된
+상태임을 확인했다. 후속 테스트 실행 결함 수정은 GitFlow feature
+흐름에 따라 `develop`에서 `feature/reaction-property-test-fix`를
+분기했다. property 테스트 단일 지정 실행과 전체 테스트 실행,
+`aidlc-docs/audit.md` Markdown lint가 성공한 변경을 conventional
+commit으로 기록한다.
+**Context**: CONSTRUCTION - UOW-REACTION Code Generation 전달 및 GitFlow
+
+---
