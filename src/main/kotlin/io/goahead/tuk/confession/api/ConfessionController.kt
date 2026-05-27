@@ -1,6 +1,7 @@
 package io.goahead.tuk.confession.api
 
 import io.goahead.tuk.confession.api.request.WriteConfessionRequest
+import io.goahead.tuk.confession.api.response.ConfessionDetailResponse
 import io.goahead.tuk.confession.api.response.ConfessionResponse
 import io.goahead.tuk.confession.application.port.GetConfessionUseCase
 import io.goahead.tuk.confession.application.port.ListConfessionsUseCase
@@ -48,13 +49,15 @@ class ConfessionController(
     @GetMapping("/{confessionId}")
     fun get(
         @PathVariable confessionId: String,
-    ): ConfessionResponse {
+        @RequestHeader("X-Device-Id") deviceId: String,
+    ): ConfessionDetailResponse {
+        validateDeviceId(deviceId)
         log.info("Getting confession id={}", confessionId)
 
-        val result = getConfessionUseCase.execute(confessionId)
+        val result = getConfessionUseCase.execute(confessionId, deviceId)
 
         log.info("Got confession id={}", result.id)
-        return ConfessionResponse.from(result)
+        return ConfessionDetailResponse.from(result)
     }
 
     @GetMapping

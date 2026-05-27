@@ -13,3 +13,7 @@ interface ReactionAggregateReader {
     fun aggregate(confessionId: ConfessionId): ReactionCounts
     fun aggregate(confessionIds: Collection<ConfessionId>): Map<ConfessionId, ReactionCounts>
 }
+
+interface ReactionSelectionReader {
+    fun selectedTypes(confessionId: ConfessionId, deviceKey: String): Set<ReactionType>
+}

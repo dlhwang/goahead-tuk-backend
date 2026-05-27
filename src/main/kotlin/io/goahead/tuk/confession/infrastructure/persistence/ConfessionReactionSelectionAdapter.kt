@@ -6,6 +6,7 @@ import io.goahead.tuk.confession.domain.ReactionCountItem
 import io.goahead.tuk.confession.domain.ReactionCounts
 import io.goahead.tuk.confession.domain.service.ConfessionReactionSelections
 import io.goahead.tuk.confession.domain.service.ReactionAggregateReader
+import io.goahead.tuk.confession.domain.service.ReactionSelectionReader
 import io.goahead.tuk.confession.enums.ReactionType
 import io.goahead.tuk.confession.infrastructure.ConfessionReactionJpaEntity
 import io.goahead.tuk.confession.infrastructure.repository.ConfessionReactionJpaRepository
@@ -17,7 +18,7 @@ import java.time.Instant
 class ConfessionReactionSelectionAdapter(
     private val idGenerator: IdGenerator,
     private val repository: ConfessionReactionJpaRepository,
-) : ConfessionReactionSelections, ReactionAggregateReader {
+) : ConfessionReactionSelections, ReactionAggregateReader, ReactionSelectionReader {
     override fun select(confessionId: ConfessionId, deviceKey: String, type: ReactionType) {
         if (repository.existsByConfessionIdAndDeviceKeyAndReactionType(confessionId.value, deviceKey, type)) {
             return
@@ -60,5 +61,9 @@ class ConfessionReactionSelectionAdapter(
             .mapValues { (_, values) ->
                 ReactionCounts.of(values.map { ReactionCountItem(it.reactionType, it.count) })
             }
+    }
+
+    override fun selectedTypes(confessionId: ConfessionId, deviceKey: String): Set<ReactionType> {
+        return repository.findReactionTypesByConfessionIdAndDeviceKey(confessionId.value, deviceKey).toSet()
     }
 }
