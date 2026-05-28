@@ -236,6 +236,39 @@ docs/
 - 커밋 제목과 pull request 제목은 conventional commit 형식을 사용하고,
   pull request 설명은 `.github/pull_request_template.md` 구조를 따른다.
 
+### `gitflow ㄱㄱ` 단축 루틴
+
+사용자가 `gitflow ㄱㄱ`, `gitflow 가자`, `gitflow 진행`, 또는 이에
+준하는 짧은 요청을 하면 코드 어시스트는 현재 변경점을 GitFlow 방식으로
+마무리하라는 뜻으로 해석한다. 이 루틴은 기본적으로 branch 생성 또는
+확인, 관련 변경만 stage, 검증, conventional commit, pull request 메시지
+초안 작성까지 수행한다.
+
+기본 절차는 다음과 같다.
+
+1. 현재 branch와 working tree 상태를 확인한다.
+2. 현재 branch가 `develop`이고 새 작업이라면 `feature/<slug>` branch를
+   만든다. 이미 `feature/*` branch라면 그 branch를 계속 사용한다.
+3. 변경 파일을 요청 범위와 무관한 변경, 이전 작업 잔여 변경, 이번
+   작업 변경으로 분류한다.
+4. 이번 요청과 직접 관련된 파일만 stage한다. 범위가 애매한 파일은
+   stage하지 않고 보고한다.
+5. 변경 유형에 맞는 검증을 실행한다. 문서 변경은 Markdown lint와
+   `git diff --check`를 기본으로 하고, `src/**` 또는 build/runtime
+   변경은 `.\gradlew.bat test`를 포함한다.
+6. conventional commit 형식으로 commit한다.
+7. `.github/pull_request_template.md` 구조를 따라 PR 제목과 본문 초안을
+   작성해 사용자에게 제공한다.
+
+`gitflow ㄱㄱ`는 기본적으로 push 또는 실제 pull request 생성을 수행하지
+않는다. 사용자가 `push까지`, `PR 생성까지`, `gh pr create까지`처럼
+명시적으로 요청한 경우에만 원격 push 또는 실제 PR 생성을 진행한다.
+네트워크 또는 권한 승인이 필요한 명령은 실행 전에 승인을 받는다.
+
+로컬 터미널에서 같은 흐름을 반복 실행할 때는
+`scripts/gitflow-feature.ps1`을 사용할 수 있다. 이 helper도 명시한
+path만 stage하며, 기본 출력은 commit과 PR 메시지 초안 생성까지다.
+
 ## 검증과 완료 보고
 
 AI-DLC 단계에서 수립한 계획과 변경 유형에 맞는 검증을 수행한다.

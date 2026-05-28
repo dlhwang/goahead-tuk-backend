@@ -1799,3 +1799,272 @@ AGENTS.md에 추가할 위치:
 **Context**: Fast Track - AI-DLC 운영 지침 문서 보강
 
 ---
+
+## Reaction `selectedByMe` Read Contract - User Request
+
+**Timestamp**: 2026-05-27T01:55:47Z
+**User Input**:
+
+```text
+아래 처럼 고해 get 메서드로 취득할때 반응 별로 selectedByMe정보가 팔요하고 요청에서 x-device-id를 넣고 get하는 것이 필요해게 되었어
+```
+
+```json
+{
+  "id": "confession_123",
+  "reactions": [
+    {
+      "type": "PRAY",
+      "count": 3,
+      "selectedByMe": true
+    },
+    {
+      "type": "COMFORT",
+      "count": 2,
+      "selectedByMe": true
+    },
+    {
+      "type": "TOGETHER",
+      "count": 0,
+      "selectedByMe": false
+    }
+  ]
+}
+```
+
+**AI Response**: 기존 Reaction 집계 조회 결정과 충돌하는 새 단건
+조회 계약으로 판단했다. `Design Track`을 선택하고
+`X-Device-Id`를 받는 단건 조회에 한해 요청 기기의 타입별 선택
+여부를 `selectedByMe`로 제공하는 요구사항 보완안과 실행 계획을
+작성했다. 목록/작성 응답, 반응 선택 저장 모델 및 배포 구성은
+변경 대상에서 제외했다.
+
+**Context**: Requirements Analysis - Reaction 자기 선택 조회 계약 보완
+
+---
+
+## Reaction `selectedByMe` Read Contract - Requirements Approval Prompt
+
+**Timestamp**: 2026-05-27T01:55:47Z
+**User Input**: Pending explicit approval.
+**AI Response**: 요구사항 보완안
+`aidlc-docs/inception/requirements/confession-reaction-selected-by-me-amendment.md`와
+실행 계획
+`aidlc-docs/inception/plans/confession-reaction-selected-by-me-execution-plan.md`의
+검토 및 승인을 요청한다. 승인 전에는 소스 구현으로 진행하지 않는다.
+**Context**: Requirements Analysis approval gate
+
+---
+
+## Reaction `selectedByMe` Read Contract - Requirements and Plan Approval
+
+**Timestamp**: 2026-05-27T01:55:47Z
+**User Input**: "Approve & Continue"
+**AI Response**: 요구사항 보완안과 단건 조회 범위의 최소 실행 계획
+승인을 기록했다. 기존 `UOW-CONFESSION-REACTION-INTEGRATION`
+기능 설계를 `selectedByMe` 파생 조회, raw ID 및 타인 선택 비노출,
+자기 선택 조회 실패의 fail-closed 처리와 PBT oracle을 포함하도록
+보완했다.
+**Context**: Requirements Analysis approval and Functional Design amendment
+
+---
+
+## Reaction `selectedByMe` Read Contract - Functional Design Approval Prompt
+
+**Timestamp**: 2026-05-27T01:55:47Z
+**User Input**: Pending explicit approval.
+**AI Response**: 보완한 기능 설계 문서
+`aidlc-docs/construction/uow-confession-reaction-integration/functional-design/`의
+검토와 승인을 요청한다. 승인되면 단건 조회 응답, Reaction 조회
+경계와 관련 테스트의 코드 생성 계획을 작성한다.
+**Context**: Functional Design approval gate
+
+---
+
+## Reaction `selectedByMe` Read Contract - Functional Design Approval
+
+**Timestamp**: 2026-05-27T02:26:07Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: 단건 조회 기능 설계 승인을 기록하고 Code Generation
+계획 단계로 진행했다. 작성 및 목록 응답을 변경하지 않기 위해 단건
+조회 전용 응답 모델, 기기별 선택 read port, 해시 키 기반 조회와
+관련 예제/PBT 검증을 구현 경계로 선정했다.
+**Context**: Functional Design approval and Code Generation planning
+
+---
+
+## Reaction `selectedByMe` Read Contract - Code Generation Plan Approval Prompt
+
+**Timestamp**: 2026-05-27T02:26:07Z
+**User Input**: Pending explicit approval.
+**AI Response**: 코드 생성 계획
+`aidlc-docs/construction/plans/uow-confession-selected-by-me-code-generation-plan.md`의
+검토와 승인을 요청한다. 승인되면 계획의 체크리스트 순서에 따라
+단건 조회 API, application, Reaction read port, persistence 및
+테스트를 수정한다.
+**Context**: Code Generation Part 1 approval gate
+
+---
+
+## Reaction `selectedByMe` Read Contract - Code Generation Plan Approval
+
+**Timestamp**: 2026-05-27T02:26:07Z
+**User Input**: "Approve & Continue"
+**AI Response**: 코드 생성 계획 승인을 기록하고 구현을 시작했다.
+단건 조회 전용 결과/응답 모델, `X-Device-Id` 전달, 기기 선택 read
+port와 JPA 조회, HMAC 파생 키 기반 `selectedByMe` 조립을
+구현했다.
+**Context**: Code Generation - Steps 1 through 3 completed
+
+---
+
+## Reaction `selectedByMe` Read Contract - Code Generation Completion Prompt
+
+**Timestamp**: 2026-05-27T02:31:00Z
+**User Input**: Pending explicit approval.
+**AI Response**: 단건 조회 전용 응답, `X-Device-Id` 전달과 검증,
+해시 키 기반 선택 타입 조회, `selectedByMe` 조립, controller/use
+case/PBT 테스트를 구현했다. `.\gradlew.bat test`는 Kotlin daemon
+접근 경고 후 fallback 컴파일로 성공했다. 생성 코드 검토와 Build
+and Test 단계 진행 승인을 요청한다.
+**Context**: Code Generation completion approval gate
+
+---
+
+## Reaction `selectedByMe` Read Contract - Code Generation Approval
+
+**Timestamp**: 2026-05-27T02:31:00Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: 구현 코드와 테스트에 대한 진행 승인을 기록하고
+Build and Test 단계로 이동했다. 전체 Gradle 테스트, 전체 Markdown
+검증과 diff 무결성 점검 결과를 최종 증빙으로 기록한다.
+**Context**: Code Generation approval and Build and Test start
+
+---
+
+## Reaction `selectedByMe` Read Contract - Build and Test Completion Prompt
+
+**Timestamp**: 2026-05-27T05:19:29Z
+**User Input**: Pending explicit approval.
+**AI Response**: `.\gradlew.bat test`를 실행해 17개 테스트가 모두
+통과했음을 확인했다. Kotlin daemon 임시 파일 접근 경고가 있었으나
+fallback 컴파일 후 `BUILD SUCCESSFUL`로 완료되었다. 변경한 AI-DLC
+문서는 Markdown lint를 통과했고 `git diff --check`도 성공했다.
+저장소 전체 Markdown lint는 이번 변경과 무관한 기존 `HELP.md`의
+`MD001`, `MD012` 오류로 실패했음을 기록했다.
+**Context**: Build and Test completion approval gate
+
+---
+
+## Reaction `selectedByMe` Read Contract - Build and Test Approval
+
+**Timestamp**: 2026-05-27T05:19:29Z
+**User Input**: "Approve & Continue"
+**AI Response**: Build and Test 결과 승인을 기록했다. 단건 조회
+`selectedByMe` 계약 보완은 구현 및 검증이 완료되었으며 Operations
+단계는 현재 workflow의 placeholder로 확인하고 이번 AI-DLC 실행을
+완료 상태로 전환했다.
+**Context**: Build and Test approval and Operations placeholder completion
+
+---
+
+## README 문서 생성 요청 및 Fast Track 계획
+
+**Timestamp**: 2026-05-28T04:08:03Z
+**User Input**:
+
+```text
+docs/PROJECT_OVERVIEW.md 이 사실은 readme.md 잖아 루트 경로에 readme.md를 이 PROJECT_OVERVIEW 내용으로 만들어줘 그런데 여기도 하네스엔지니어링도 하고 있고 sdd도 하고 있잖아 그정보도 포함해줘
+```
+
+**AI Response**: 루트 README가 없는 것을 확인했고,
+`docs/PROJECT_OVERVIEW.md`의 저장소 개요를 기반으로 루트
+`README.md`를 작성하되, 이 저장소가 Kotlin/Spring Boot 백엔드뿐
+아니라 AI-DLC 기반 하네스 엔지니어링과 SDD 산출물도 함께 관리한다는
+정보를 포함하기로 했다.
+
+**Plan**:
+
+1. `Requirement summary`: `docs/PROJECT_OVERVIEW.md` 내용을 바탕으로
+   루트 `README.md`를 생성하고, 하네스 엔지니어링 및 SDD 사용 정보를
+   보강한다.
+2. `Task type`: 문서 생성 및 저장소 소개 보강.
+3. `Selected AI-DLC execution mode`: `Fast Track`.
+4. `Reason for selected mode`: 루트 문서 추가만 수행하며 API 계약, 도메인
+   경계, DB 스키마, 실행 동작 변경이 없다.
+5. `Required context files`: `AGENTS.md`,
+   `aidlc-rules/aws-aidlc-rules/core-workflow.md`,
+   `aidlc-docs/aidlc-state.md`, `aidlc-docs/audit.md`,
+   `docs/PROJECT_OVERVIEW.md`, `docs/BACKEND_GITFLOW.md`,
+   AI-DLC common rule details.
+6. `Expected files to change`: `README.md`, `aidlc-docs/audit.md`.
+7. `Files or directories that must not change`: `src/**`,
+   `aidlc-rules/**`, 기존 `aidlc-docs` 산출물 본문,
+   `.github/**`, `docs/PROJECT_OVERVIEW.md`.
+8. `Validation commands`: `npx.cmd markdownlint-cli2 "README.md"
+   "aidlc-docs/audit.md"`, `git diff --check`, `git diff -- README.md
+   aidlc-docs/audit.md`.
+9. `Risks or assumptions`: 루트 README 파일명은 일반 관례에 맞춰
+   `README.md`로 생성한다. Windows 파일 시스템에서는 `readme.md`와
+   동일 경로로 취급된다. SDD는 이 저장소의 AI-DLC 산출물을
+   specification/design trail로 사용하는 방식으로 설명한다.
+
+**Stages**: Workspace 확인, `Requirements Analysis` minimal,
+`Workflow Planning` minimal, 문서 생성, Markdown 검증, 완료 보고를
+실행한다. `User Stories`, `Application Design`, `Units Generation`,
+`Functional Design`, `NFR Requirements`, `NFR Design`,
+`Infrastructure Design`은 문서 소개 작업이며 기능/설계/인프라 변경이
+없어 생략한다.
+**Context**: Fast Track - 루트 README 생성
+
+---
+
+## GitFlow Shortcut Routine 요청 및 Fast Track 계획
+
+**Timestamp**: 2026-05-28T04:16:23Z
+**User Input**:
+
+```text
+오키 그렇게 진행시켜
+```
+
+**AI Response**: 사용자가 `gitflow ㄱㄱ` 같은 자연어 별칭으로
+현재 변경점을 GitFlow feature branch, focused staging, conventional
+commit, PR 메시지 초안 작성까지 반복 실행하고 싶다고 확인했다.
+`AGENTS.md`에 코드 어시스트용 별칭 규칙을 추가하고, 로컬에서 같은
+흐름을 실행할 수 있는 PowerShell helper script를 추가하기로 했다.
+기본 동작은 push 또는 실제 PR 생성 없이 PR body 초안 작성까지로
+제한한다.
+
+**Plan**:
+
+1. `Requirement summary`: `gitflow ㄱㄱ` 요청을 GitFlow feature 작업
+   마무리 루틴으로 표준화하고, 로컬 helper script를 제공한다.
+2. `Task type`: 개발 하네스 및 문서화된 운영 절차 보강.
+3. `Selected AI-DLC execution mode`: `Fast Track`.
+4. `Reason for selected mode`: 저장소 운영 지침과 보조 script 추가이며
+   API 계약, 도메인 경계, DB 스키마, 런타임 동작 변경이 없다.
+5. `Required context files`: `AGENTS.md`, `core-workflow.md`,
+   `aidlc-state.md`, `audit.md`, `docs/BACKEND_GITFLOW.md`,
+   `.github/pull_request_template.md`, AI-DLC common rule details.
+6. `Expected files to change`: `AGENTS.md`,
+   `scripts/gitflow-feature.ps1`, `aidlc-docs/audit.md`.
+7. `Files or directories that must not change`: `src/**`,
+   `aidlc-rules/**`, `.github/**`, 기존 AI-DLC 산출물 본문.
+8. `Validation commands`: `npx.cmd markdownlint-cli2 "AGENTS.md"
+   "aidlc-docs/audit.md"`, `powershell.exe -NoProfile -ExecutionPolicy
+   Bypass -File scripts/gitflow-feature.ps1 -Help`, `git diff --check`.
+9. `Risks or assumptions`: helper script는 stage 대상이 명확히 전달된
+   경우에만 commit을 수행하게 하며, push와 `gh pr create`는 수행하지
+   않는다. 코드 어시스트는 기존 미커밋 변경을 사용자 변경으로 보고
+   요청 범위와 무관한 파일을 stage하지 않는다.
+
+**Stages**: Workspace 확인, `Requirements Analysis` minimal,
+`Workflow Planning` minimal, 문서 및 helper script 작성, 최소 검증,
+완료 보고를 실행한다. `User Stories`, `Application Design`,
+`Units Generation`, `Functional Design`, `NFR Requirements`,
+`NFR Design`, `Infrastructure Design`은 기능/API/인프라 변경이 없어
+생략한다.
+**Context**: Fast Track - GitFlow shortcut routine
+
+---

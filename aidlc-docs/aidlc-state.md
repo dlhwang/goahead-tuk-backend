@@ -147,6 +147,36 @@
 - **Required gates**: Full Security Baseline evidence and applicable
   Property-Based Testing compliance before final Build and Test approval
 
+## Active Amendment - Reaction `selectedByMe` Read Contract
+
+- **Requested At**: 2026-05-27T01:55:47Z
+- **Current Phase**: OPERATIONS
+- **Current Stage**: Workflow Complete - Reaction `selectedByMe` Read Contract
+- **Selected Mode**: Design Track
+- **Change Goal**: 단건 `GET /api/confessions/{confessionId}`가
+  `X-Device-Id`를 받고 반응 타입별 `selectedByMe`를 반환하도록
+  기존 Reaction 조회 계약을 보완한다.
+- **Scope Boundary**: 목록 조회와 작성 응답 계약, 기존 반응 저장 모델,
+  배포 구성은 변경하지 않는다.
+- **Extension Status**: Reaction MVP의 `Security Baseline`과
+  `Property-Based Testing` 활성 결정을 유지한다.
+
+### Amendment Progress
+
+- [x] Workspace Detection - 기존 Reaction MVP 산출물과 구현을 재사용
+- [x] Requirements Analysis Draft - 자기 선택 조회 보완안 작성
+- [x] Requirements Analysis Approval - 사용자 진행 승인
+- [x] Workflow Planning Minimal - 승인 범위와 생략 단계 확정
+- [x] Functional Design Amendment - 단건 조회 선택 상태 규칙 보완
+- [x] Functional Design Approval - 사용자 진행 승인
+- [x] Code Generation Planning - 수정 단계 계획 작성
+- [x] Code Generation Plan Approval - 사용자 진행 승인
+- [x] Code Generation - Kotlin 코드와 테스트 구현, 예비 테스트 완료
+- [x] Code Generation Approval - 사용자 진행 승인
+- [x] Build and Test - 전체 테스트와 변경 문서 검증 증빙 기록
+- [x] Build and Test Approval - 사용자 진행 승인
+- [x] Operations - Placeholder acknowledged on 2026-05-27T05:19:29Z
+
 ## Reverse Engineering Status
 
 - [x] Reverse Engineering - Completed on 2026-05-22T04:19:59Z
